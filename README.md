@@ -2,7 +2,7 @@
 
 Recording deployed contracts address.
 
-#### Install
+#### 1. Install
 
 ```
 npm install --save-dev hardhat-deployed-records
@@ -10,21 +10,22 @@ npm install --save-dev hardhat-deployed-records
 yarn add --dev hardhat-deployed-records
 ```
 
-#### Included Commands
+#### 2. Included Commands
 
-- `npx hardhat deployed-init`: Initializes the deployed folder
-- `npx hardhat deployed-add --netwrok <network>`: Add new network deployed
+- `npx hardhat deployed-init [--netwrok <network>]`: Initializes the deployed folder, `--netwrok` parameter is optional, default value is `hardhat` from Hardhat framework.
+- `npx hardhat deployed-add --netwrok <network>`: Add new network deployed, `--netwrok` parameter is required.
 - `npx hardhat deployed-migrate`: Migrate the deployed folder
 
-Commonly, you need execute `npx hardhat deployed-init` task first, and then:
+Commonly, you need execute `npx hardhat deployed-init [--netwrok <network>]` task first, and then:
 - when you want to deploy contracts to a new network, you need to execute `npx hardhat deployed-add --netwrok <network>` task
 - when you add new contracts or delete contracts you need to execute `npx hardhat deployed-migrate` task to keep deployed folder is the latest.
 
-for `npx hardhat deployed-init` task, you can pass `--netwrok <network>` parameter to specify the network you want to deploy to, default value is `hardhat` from Hardhat framework.
-for `npx hardhat deployed-add` task, you must pass `--netwrok <network>` parameter to specify the network you want to add.
-for `npx hardhat deployed-migrate` task, no parameters needed.
+`--netwrok <network>` parameter is inherited from Hardhat framework, so:
+* for `npx hardhat deployed-init [--netwrok <network>]` task, you can pass `--netwrok <network>` parameter to specify the network you want to deploy to, default value is `hardhat` from Hardhat framework.
+* for `npx hardhat deployed-add --netwrok <network>` task, you must pass `--netwrok <network>` parameter to specify the network you want to add.
+* for `npx hardhat deployed-migrate` task, no parameters needed.
 
-#### Usage
+#### 3. Usage
 
 Load plugin in Hardhat config:
 
@@ -50,9 +51,11 @@ deployedRecords: {
 }
 ```
 
-when you execute `npx hardhat deployed-init` task, it will generate default `scripts/deployed` directory(if you not set a different `deployedDir` value in `hardhat.config.ts` config file).
+#### 4. The `scripts/deployed` directory's structure and how to use generated functions
 
-example:
+when you execute `npx hardhat deployed-init [--netwrok <network>]` task, it will generate default `scripts/deployed` directory(if you not set a different `deployedDir` value in `hardhat.config.ts` config file).
+
+following is a `scripts/deployed` directory example:
 
 ![](demo.png)
 

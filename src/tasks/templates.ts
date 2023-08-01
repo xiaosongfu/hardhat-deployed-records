@@ -25,6 +25,9 @@ function saveSync() {
 const network = hre.network.name;
 console.log('current network: ', network);
 
+// const [signer] = await ethers.getSigners();
+// console.log('current signer: ', signer.address);
+
 const manifest = path.join(__dirname, network, "contracts.json");
 const data = readSync();
 

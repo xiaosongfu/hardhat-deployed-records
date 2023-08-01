@@ -1,6 +1,6 @@
 {
   "name": "hardhat-deployed-records",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Hardhat TypeScript plugin for deploying records",
   "repository": "github:xiaosongfu/hardhat-deployed-records",
   "author": "xiaosongfu",
