@@ -36,12 +36,14 @@ task("deployed-migrate", "Migrate the deployed folder").setAction(
       flag: "w",
     });
 
+    // migrate `<network>/contracts.json` file with:
+    //    1. contracts changes(no change, added, removed)
+    //    2. has deployed contract addresses
     fs.readdirSync(configs.deployedDir, { recursive: false }).forEach(
       (network) => {
         const manifest = `${configs.deployedDir}/${network}/${CONTRACTS_JSON_FILE}`;
+        // NOTICE: `fs.existsSync('scripts/deployed/index.ts/contracts.json')` will be `false`
         if (fs.existsSync(manifest)) {
-          // NOTICE: `fs.existsSync('scripts/deployed/index.ts/contracts.json')` will be `false`
-
           // read old `contracts.json` file
           const content = fs.readFileSync(manifest, "utf-8");
           const existsJson = JSON.parse(content);

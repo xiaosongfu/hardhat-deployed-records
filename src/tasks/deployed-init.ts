@@ -20,8 +20,6 @@ task("deployed-init", "Initializes the deployed folder").setAction(
     // get network name
     const network = hre.network.name; // default value is `hardhat`
 
-    // ------ ------ ------ ------ ------ ------ ------ ------ ------
-
     // if the `deployed` folder already exists, throw an error
     if (fs.existsSync(configs.deployedDir)) {
       throw new HardhatPluginError(
@@ -30,6 +28,8 @@ task("deployed-init", "Initializes the deployed folder").setAction(
       );
     }
 
+    // sourceNames: ["PepeForkToken", "mock/MockERC20"]
+    // contracts: [{contractName: "MockERC20", attrs: ["mock", "MockERC2"]}, ...]
     const { sourceNames, contracts } = await parseArtifacts(
       hre,
       configs.ignoreContracts,
@@ -37,17 +37,15 @@ task("deployed-init", "Initializes the deployed folder").setAction(
 
     // create `deployed` folder
     fs.mkdirSync(configs.deployedDir);
-    // write `index.ts` file
+    // write `deployed/index.ts` file
     const code = Mustache.render(indexFile, { contracts });
     fs.writeFileSync(`${configs.deployedDir}/${INDEX_TS_FILE}`, code, {
       flag: "a+",
     });
 
-    // ------ ------ ------ ------ ------ ------ ------ ------ ------
-
-    // create network folder
+    // create <network> folder
     fs.mkdirSync(`${configs.deployedDir}/${network}`);
-    // write `contracts.json` file
+    // write `<network>/contracts.json` file
     const data = paths2json({}, sourceNames, "_");
     fs.writeFileSync(
       `${configs.deployedDir}/${network}/${CONTRACTS_JSON_FILE}`,

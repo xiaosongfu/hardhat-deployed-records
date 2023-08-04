@@ -71,29 +71,6 @@ export async function parseArtifacts(
   });
 }
 
-// export function paths2json(paths: string[], defaultValue: string): string {
-//   const result: any = {};
-//   for (const path of paths) {
-//     const arr = path.split("/");
-//     if (arr.length == 1) {
-//       result[path] = defaultValue;
-//     } else {
-//       let current = result;
-//       for (let i = 0; i < arr.length; i++) {
-//         const path = arr[i];
-//         if (i == arr.length - 1) {
-//           current[path] = defaultValue;
-//         } else {
-//           current[path] = current[path] == null ? {} : current[path];
-//           current = current[path];
-//         }
-//       }
-//     }
-//   }
-
-//   return JSON.stringify(result, null, 2);
-// }
-
 export function paths2json(
   existsJson: any,
   paths: string[],

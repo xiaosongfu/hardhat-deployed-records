@@ -17,8 +17,6 @@ task("deployed-add", "Add new network deployed").setAction(
     // get network name
     const network = hre.network.name; // default value is `hardhat`
 
-    // ------ ------ ------ ------ ------ ------ ------ ------ ------
-
     // if the network folder already exists, throw an error
     if (fs.existsSync(`${configs.deployedDir}/${network}`)) {
       throw new HardhatPluginError(
@@ -29,11 +27,9 @@ task("deployed-add", "Add new network deployed").setAction(
 
     const { sourceNames } = await parseArtifacts(hre, configs.ignoreContracts);
 
-    // ------ ------ ------ ------ ------ ------ ------ ------ ------
-
-    // create network folder
+    // create <network> folder
     fs.mkdirSync(`${configs.deployedDir}/${network}`);
-    // write `contracts.json` file
+    // write `<network>/contracts.json` file
     const data = paths2json({}, sourceNames, "_");
     fs.writeFileSync(
       `${configs.deployedDir}/${network}/${CONTRACTS_JSON_FILE}`,
