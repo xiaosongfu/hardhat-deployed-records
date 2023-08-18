@@ -25,12 +25,12 @@ task("deployed-add", "Add new network deployed").setAction(
       );
     }
 
-    const { sourceNames } = await parseArtifacts(hre, configs.ignoreContracts);
+    const { contracts } = await parseArtifacts(hre, configs.ignoreContracts);
 
     // create <network> folder
     fs.mkdirSync(`${configs.deployedDir}/${network}`);
     // write `<network>/contracts.json` file
-    const data = paths2json({}, sourceNames, "_");
+    const data = paths2json({}, contracts, "_");
     fs.writeFileSync(
       `${configs.deployedDir}/${network}/${CONTRACTS_JSON_FILE}`,
       data,

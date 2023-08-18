@@ -25,10 +25,7 @@ task("deployed-migrate", "Migrate the deployed folder").setAction(
       );
     }
 
-    const { sourceNames, contracts } = await parseArtifacts(
-      hre,
-      configs.ignoreContracts,
-    );
+    const { contracts } = await parseArtifacts(hre, configs.ignoreContracts);
 
     // write new `index.ts` file
     const code = Mustache.render(indexFile, { contracts });
@@ -49,7 +46,7 @@ task("deployed-migrate", "Migrate the deployed folder").setAction(
           const existsJson = JSON.parse(content);
 
           // write new `contracts.json` file
-          const data = paths2json(existsJson, sourceNames, "_");
+          const data = paths2json(existsJson, contracts, "_");
           fs.writeFileSync(manifest, data, {
             flag: "w",
           });

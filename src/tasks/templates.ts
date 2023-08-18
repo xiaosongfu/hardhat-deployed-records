@@ -23,10 +23,10 @@ function saveSync() {
 }
 
 const network = hre.network.name;
-console.log('current network: ', network);
+console.log("current network: ", network);
 
 // const [signer] = await ethers.getSigners();
-// console.log('current signer: ', signer.address);
+// console.log("current signer: ", signer.address);
 
 const manifest = path.join(__dirname, network, "contracts.json");
 const data = readSync();
@@ -34,12 +34,12 @@ const data = readSync();
 const deployd = {
   contracts: data,
   {{#contracts}}
-  set{{contractName}}Contract: function (addr: string) {
-    this.contracts{{#attrs}}["{{.}}"]{{/attrs}} = addr;
+  set{{name}}Contract: function (addr: string) {
+    this.contracts{{#path}}["{{.}}"]{{/path}} = addr;
     saveSync();
   },
-  get{{contractName}}Contract: function (): string {
-    return this.contracts{{#attrs}}["{{.}}"]{{/attrs}};
+  get{{name}}Contract: function (): string {
+    return this.contracts{{#path}}["{{.}}"]{{/path}};
   },
   {{/contracts}}
 };

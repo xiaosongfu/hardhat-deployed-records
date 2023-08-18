@@ -4,68 +4,65 @@ export async function parseArtifacts(
   hre: HardhatRuntimeEnvironment,
   ignoreContracts: string[],
 ): Promise<{
-  sourceNames: string[];
-  contracts: { contractName: string; attrs: string[] }[];
+  contracts: { name: string; path: string[] }[];
 }> {
   const fullNames = await hre.artifacts.getAllFullyQualifiedNames();
-  //console.log("~~~~", fullNames);
+  console.log(fullNames);
   // examples:
-  // ~~~~ [
-  //   '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:OwnableUpgradeable',
-  //   '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:Initializable',
-  //   '@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:ERC20Upgradeable',
-  //   '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol:IERC20Upgradeable',
-  //   '@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol:IERC20MetadataUpgradeable',
-  //   '@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol:AddressUpgradeable',
-  //   '@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:ContextUpgradeable',
-  //   'contracts/PepeForkToken.sol:PepeForkToken',
-  //   'contracts/mock/MockERC20.sol:MockERC20'
+  // [
+  //   '@openzeppelin/contracts/access/Ownable.sol:Ownable',
+  //   '@openzeppelin/contracts/utils/math/SignedMath.sol:SignedMath',
+  //   'contracts/IBar.sol:IBar',
+  //   'contracts/MMERC20.sol:MMERC20',
+  //   'contracts/MMERC20.sol:Bar',
+  //   'contracts/mock/foo/Foo.sol:Foo',
+  //   'contracts/mock/foo/Foo.sol:Foo2'
   // ]
 
-  let sourceNames: string[] = []; // ["PepeForkToken", "mock/MockERC20"]
-  let contracts: { contractName: string; attrs: string[] }[] = []; // [{contractName: "MockERC20", attrs: ["mock", "MockERC2"]}, ...]
+  let contracts: { name: string; path: string[] }[] = [];
   for (const fullName of fullNames) {
-    // skip libraries
+    // skip third-party dependencies
     if (!fullName.startsWith("contracts/")) continue;
 
     // get sourceName and contractName
-    let { sourceName, contractName } = await hre.artifacts.readArtifact(
-      fullName,
-    );
-    //console.log("~~~~", sourceName, contractName);
+    let {
+      sourceName: source,
+      contractName: name,
+      bytecode,
+    } = await hre.artifacts.readArtifact(fullName);
+    console.log("~~~~", source, name);
     // examples:
-    // ~~~~ contracts/PepeForkToken.sol PepeForkToken
-    // ~~~~ contracts/mock/MockERC20.sol MockERC20
+    // ~~~~ contracts/IBar.sol IBar
+    // ~~~~ contracts/MMERC20.sol MMERC20
+    // ~~~~ contracts/MMERC20.sol Bar
     // ~~~~ contracts/mock/foo/Foo.sol Foo
+    // ~~~~ contracts/mock/foo/Foo.sol Foo2
+
+    // skip solidity interface
+    if (bytecode === "0x") continue;
 
     // skip ignored contracts
-    if (ignoreContracts.includes(contractName)) continue;
+    if (ignoreContracts.includes(name)) continue;
 
-    // remove the prefix `contracts/` and the suffix `.sol`
-    // `contracts/mock/MockERC20.sol` -> `mock/MockERC20`
-    sourceName = sourceName.slice(10, sourceName.length - 4);
-    //console.log("~~~~", sourceName);
+    // `contracts/MMERC20.sol MMERC20` -> `MMERC20` -> `["MMERC20"]`
+    // `contracts/MMERC20.sol Bar` -> `MMERC20` -> `["Bar"]`
+    // `contracts/mock/foo/Foo.sol Foo` -> `mock/foo/Foo` -> `["mock", "foo", "Foo"]`
+    // `contracts/mock/foo/Foo.sol Foo2` -> `mock/foo/Foo` -> `["mock", "foo", "Foo2"]`
+    let path = source.slice(10, source.length - 4).split("/");
+    path[path.length - 1] = name; // !! IMPORTANT: replace last element with contract name
+
+    console.log("---- ", name, path);
     // examples:
-    // ~~~~ PepeForkToken
-    // ~~~~ mock/MockERC2
-    // ~~~~ mock/foo/Foo
+    // ----  MMERC20 [ 'MMERC20' ]
+    // ----  Bar [ 'Bar' ]
+    // ----  Foo [ 'mock', 'foo', 'Foo' ]
+    // ----  Foo2 [ 'mock', 'foo', 'Foo2' ]
 
-    // convert to array
-    // `mock/MockERC2` -> `["mock", "MockERC2"]`
-    const attrs = sourceName.split("/");
-    //console.log("~~~~", attrs);
-    // examples:
-    // ~~~~ [ 'PepeForkToken' ]
-    // ~~~~ [ 'mock', 'MockERC20' ]
-    // ~~~~ [ 'mock', 'foo', 'Foo' ]
-
-    sourceNames.push(sourceName);
-    contracts.push({ contractName, attrs });
+    contracts.push({ name, path });
   }
 
   return new Promise((resolve) => {
     resolve({
-      sourceNames,
       contracts,
     });
   });
@@ -73,30 +70,30 @@ export async function parseArtifacts(
 
 export function paths2json(
   existsJson: any,
-  paths: string[],
+  contracts: { name: string; path: string[] }[],
   defaultValue: string,
 ): string {
   const result: any = {};
-  for (const path of paths) {
-    const arr = path.split("/");
-    if (arr.length == 1) {
-      result[path] = existsJson[path] == null ? defaultValue : existsJson[path];
+  for (const contract of contracts) {
+    if (contract.path.length == 1) {
+      const key = contract.name;
+      result[key] = existsJson[key] == null ? defaultValue : existsJson[key];
     } else {
       // reset value at each loop
       let current = result;
       let currentExists = existsJson;
 
-      for (let i = 0; i < arr.length; i++) {
-        const name = arr[i];
-        if (i == arr.length - 1) {
-          current[name] =
-            currentExists[name] == null ? defaultValue : currentExists[name];
+      for (let i = 0; i < contract.path.length; i++) {
+        if (i == contract.path.length - 1) {
+          const key = contract.name;
+          current[key] =
+            currentExists[key] == null ? defaultValue : currentExists[key];
         } else {
-          current[name] = current[name] == null ? {} : current[name];
-          current = current[name];
+          const key = contract.path[i];
+          current[key] = current[key] == null ? {} : current[key];
+          current = current[key];
 
-          currentExists =
-            currentExists[name] == null ? {} : currentExists[name];
+          currentExists = currentExists[key] == null ? {} : currentExists[key];
         }
       }
     }
