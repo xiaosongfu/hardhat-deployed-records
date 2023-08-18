@@ -5,9 +5,9 @@ Recording deployed contracts address.
 #### 1. Install
 
 ```
-npm install --save-dev hardhat-deployed-records
+$ npm install --save-dev hardhat-deployed-records
 # or
-yarn add --dev hardhat-deployed-records
+$ yarn add --dev hardhat-deployed-records
 ```
 
 #### 2. Included Commands
@@ -23,7 +23,7 @@ Commonly, you need execute `npx hardhat deployed-init [--netwrok <network>]` tas
 `--netwrok <network>` parameter is inherited from Hardhat framework, so:
 * for `npx hardhat deployed-init [--netwrok <network>]` task, you can pass `--netwrok <network>` parameter to specify the network you want to deploy to, default value is `hardhat` from Hardhat framework.
 * for `npx hardhat deployed-add --netwrok <network>` task, you must pass `--netwrok <network>` parameter to specify the network you want to add.
-* for `npx hardhat deployed-migrate` task, no parameters needed.
+* for `npx hardhat deployed-migrate` task, no need.
 
 #### 3. Usage
 
@@ -60,3 +60,9 @@ following is a `scripts/deployed` directory example:
 ![](demo.png)
 
 so, in your deploy scripts, you can use `getXxxContract()` function to get contract's address; and use `setXxxContract(addr)` function to set contract's address.
+
+#### 5. Version History
+
+- v0.3.0 (2023/08/18)
+    - auto skip `interface` type contract
+    - support multiple contracts in one solidity file
