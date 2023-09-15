@@ -29,6 +29,7 @@ export async function parseArtifacts(
       sourceName: source,
       contractName: name,
       bytecode,
+      abi,
     } = await hre.artifacts.readArtifact(fullName);
     console.log("~~~~", source, name);
     // examples:
@@ -38,8 +39,11 @@ export async function parseArtifacts(
     // ~~~~ contracts/mock/foo/Foo.sol Foo
     // ~~~~ contracts/mock/foo/Foo.sol Foo2
 
-    // skip solidity interface
+    // skip solidity interface contract
     if (bytecode === "0x") continue;
+
+    // skip solidity library contract
+    if (abi.length === 0) continue;
 
     // skip ignored contracts
     if (ignoreContracts.includes(name)) continue;
