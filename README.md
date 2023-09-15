@@ -63,6 +63,9 @@ so, in your deploy scripts, you can use `getXxxContract()` function to get contr
 
 #### 5. Version History
 
+- v0.3.1 (2023/09/15)
+  - auto skip solidity `library` contract
+
 - v0.3.0 (2023/08/18)
     - auto skip `interface` type contract
     - support multiple contracts in one solidity file
