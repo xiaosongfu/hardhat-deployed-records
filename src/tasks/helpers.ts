@@ -105,3 +105,17 @@ export function paths2json(
 
   return JSON.stringify(result, null, 2);
 }
+
+export function flatJson(json: any): [string, string][] {
+  const result: [string, string][] = [];
+  for (const key in json) {
+    if (typeof json[key] == "object") {
+      const r = flatJson(json[key]);
+      result.push(...r);
+    } else {
+      result.push([key, json[key]]);
+    }
+  }
+
+  return result;
+}

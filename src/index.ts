@@ -10,6 +10,7 @@ import "./type-extensions";
 import "./tasks/deployed-init";
 import "./tasks/deployed-add";
 import "./tasks/deployed-migrate";
+import "./tasks/deployed-list";
 
 extendConfig(
   (config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) => {
