@@ -2,7 +2,7 @@ import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { HardhatPluginError } from "hardhat/plugins";
 import fs from "fs";
-import { PLUGIN_NAME } from "../constants";
+import { DEFAULT_DEPLOYED_ADDRESS, PLUGIN_NAME } from "../constants";
 import { blockchainExplorer } from "./list";
 import { flatJson } from "./helpers";
 
@@ -47,10 +47,14 @@ task("deployed-list", "List deployed of one network")
       const content = fs.readFileSync(manifest, "utf-8");
       let json = JSON.parse(content);
 
-      const list: {}[] =
-        flatJson(json).map((x) => {
-          return { Contract: x[0], Address: x[1], "Blockchain Explorer": explorer + x[1] };
-        });
+      const list: {}[] = flatJson(json).map((element) => {
+        return {
+          Contract: element[0],
+          Address: element[1],
+          "Blockchain Explorer":
+            element[1] == DEFAULT_DEPLOYED_ADDRESS ? "" : explorer + element[1],
+        };
+      });
       console.table(list);
     },
   );

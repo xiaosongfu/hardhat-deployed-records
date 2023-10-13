@@ -4,7 +4,12 @@ import { HardhatPluginError } from "hardhat/plugins";
 import { TASK_COMPILE } from "hardhat/builtin-tasks/task-names";
 import fs from "fs";
 import Mustache from "mustache";
-import { PLUGIN_NAME, INDEX_TS_FILE, CONTRACTS_JSON_FILE } from "../constants";
+import {
+  PLUGIN_NAME,
+  INDEX_TS_FILE,
+  CONTRACTS_JSON_FILE,
+  DEFAULT_DEPLOYED_ADDRESS,
+} from "../constants";
 import { paths2json } from "./helpers";
 import { parseArtifacts } from "./helpers";
 import { indexFile } from "./templates";
@@ -43,7 +48,7 @@ task("deployed-init", "Initializes the deployed folder").setAction(
     // create <network> folder
     fs.mkdirSync(`${configs.deployedDir}/${network}`);
     // write `<network>/contracts.json` file
-    const data = paths2json({}, contracts, "_");
+    const data = paths2json({}, contracts, DEFAULT_DEPLOYED_ADDRESS);
     fs.writeFileSync(
       `${configs.deployedDir}/${network}/${CONTRACTS_JSON_FILE}`,
       data,
