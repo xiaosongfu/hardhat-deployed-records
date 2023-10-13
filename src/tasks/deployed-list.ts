@@ -47,9 +47,10 @@ task("deployed-list", "List deployed of one network")
       const content = fs.readFileSync(manifest, "utf-8");
       let json = JSON.parse(content);
 
-      const list = flatJson(json).map((x) => {
-        return [x[0], x[1], explorer + x[1]];
-      });
+      const list: {}[] =
+        flatJson(json).map((x) => {
+          return { Contract: x[0], Address: x[1], "Blockchain Explorer": explorer + x[1] };
+        });
       console.table(list);
     },
   );
