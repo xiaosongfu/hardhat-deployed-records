@@ -63,6 +63,9 @@ so, in your deploy scripts, you can use `getXxxContract()` function to get contr
 
 #### 5. Version History
 
+- v0.3.3 (2023/1013)
+  - beautify `deployed-list` command's output
+
 - v0.3.2 (2023/1013)
   - add `deployed-list` command
 
