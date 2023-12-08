@@ -31,7 +31,7 @@ console.log("current network: ", network);
 const manifest = path.join(__dirname, network, "contracts.json");
 const data = readSync();
 
-const deployd = {
+const deployed = {
   contracts: data,
   {{#contracts}}
   set{{name}}Contract: function (addr: string) {
@@ -44,4 +44,4 @@ const deployd = {
   {{/contracts}}
 };
 
-export default deployd;`;
+export default deployed;`;

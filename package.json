@@ -1,6 +1,6 @@
 {
   "name": "hardhat-deployed-records",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "description": "Hardhat plugin for deploying records",
   "repository": "github:xiaosongfu/hardhat-deployed-records",
   "author": "xiaosongfu",
