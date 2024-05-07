@@ -1,3 +1,6 @@
+
+> Archived! Please use [hardhat-deployed](https://github.com/xiaosongfu/hardhat-deployed)
+
 ## Hardhat Deployed Records
 
 Recording deployed contracts address.
